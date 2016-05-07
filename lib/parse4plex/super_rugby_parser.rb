@@ -1,11 +1,9 @@
-require_relative 'base_name_parser'
-
 module Parse4Plex
 
   class SuperRugbyParser < BaseNameParser
 
     def canParse()
-      if file.include? '.Super.Rugby.'
+      if file.include? ".Super.Rugby."
         return true
       end
 

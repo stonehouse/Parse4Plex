@@ -3,8 +3,8 @@ lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
-  spec.name          = "Parse4Plex"
-  spec.version       = '0.1'
+  spec.name          = "parse4plex"
+  spec.version       = '0.01'
   spec.authors       = ["Alexander Stonehouse"]
   spec.email         = ["alex.stonehouse@gmail.com"]
   spec.summary       = %q{Small gem to rename files for Plex}
@@ -12,7 +12,9 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/egosapien/Parse4Plex"
   spec.license       = "MIT"
 
-  spec.files         = ['lib/parse4Plex.rb']
-  spec.executables   = ['bin/parse4Plex']
+  spec.files         = ['lib/parse4plex.rb'].concat(Dir["lib/parse4plex/*"])
+  spec.executables   = ['parse4plex']
   spec.require_paths = ["lib"]
+
+  spec.add_dependency "colorize", "0.7.7"
 end

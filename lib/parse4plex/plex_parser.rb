@@ -1,4 +1,4 @@
-require_relative "super_rugby_parser"
+require "colorize"
 
 module Parse4Plex
 
@@ -19,9 +19,9 @@ module Parse4Plex
         globQuery = "#{@path}*.{#{@supportedExtensions}}"
 
         unless @performParse
-          print "(TRIAL RUN)"
+          print "(TRIAL RUN)".red
         end
-        puts "Renaming the following files..."
+        puts "Renaming the following files...".green
         Dir.glob(globQuery) do |fullFilePath|
           dir = File.dirname fullFilePath
           file = File.basename fullFilePath
@@ -35,14 +35,14 @@ module Parse4Plex
               if @performParse
                 File.rename(fullFilePath, "#{dir}/#{parsedName}")
               end
-              puts "Parsed from '#{file}' to '#{parsedName}'"
+              puts "Parsed from '#{file}' to '#{parsedName.blue}'"
               parsed = true
               break
             end
           end
 
           unless parsed
-            puts "No parsers found for '#{file}'"
+            puts "No parsers found".red + " for '#{file}'"
           end
         end
       else

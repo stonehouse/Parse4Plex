@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require '../lib/parse4plex'
+require "parse4plex"
 
 path = ARGV[0]
 args = ARGV[1]

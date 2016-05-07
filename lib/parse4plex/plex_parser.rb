@@ -24,6 +24,7 @@ module Parse4Plex
           dir = File.dirname fullFilePath
           file = File.basename fullFilePath
 
+          parsed = false
           @nameParsers.each do |parserClass|
             parser = parserClass.new(file)
 
@@ -32,9 +33,14 @@ module Parse4Plex
               if @performParse
                 File.rename(fullFilePath, "#{dir}/#{parsedName}")
               end
-              puts "from '#{file}' to '#{parsedName}'"
+              puts "Parsed from '#{file}' to '#{parsedName}'"
+              parsed = true
               break
             end
+          end
+
+          unless parsed
+            puts "No parsers found for '#{file}'"
           end
         end
       else

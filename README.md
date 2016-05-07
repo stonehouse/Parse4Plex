@@ -9,6 +9,7 @@ NOTE: Calling without parse will show all changes without actually executing the
 
 #### Current State ####
 - Works with Super Rugby games...
+- Searches for .mp4/.avi files in a given directory
 
 #### TODO ####
 - Create proper Gem

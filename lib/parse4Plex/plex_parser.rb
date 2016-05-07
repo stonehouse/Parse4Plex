@@ -1,11 +1,12 @@
-require_relative 'base_name_parser'
+require_relative "super_rugby_parser"
 
 module Parse4Plex
 
   class PlexParser
+
     def initialize(path, performParse=false)
       @path = path
-      @nameParsers = [BaseNameParser]
+      @nameParsers = [SuperRugbyParser]
       @supportedExtensions = 'mp4,avi'
       @performParse = performParse
     end
@@ -14,18 +15,24 @@ module Parse4Plex
       unless @path.nil?
 
         globQuery = "#{@path}*.{#{@supportedExtensions}}"
-        Dir.glob(globQuery) do |file|
+
+        unless @performParse
+          print "(TRIAL RUN)"
+        end
+        puts "Renaming the following files..."
+        Dir.glob(globQuery) do |fullFilePath|
+          dir = File.dirname fullFilePath
+          file = File.basename fullFilePath
+
           @nameParsers.each do |parserClass|
             parser = parserClass.new(file)
 
             if parser.canParse
               parsedName = parser.parseName
-              unless @performParse
-                print "(Testrun)"
-              else
-                File.rename(file, parsedName)
+              if @performParse
+                File.rename(fullFilePath, "#{dir}/#{parsedName}")
               end
-              puts "File parsed from '#{file}' to '#{parsedName}'"
+              puts "from '#{file}' to '#{parsedName}'"
               break
             end
           end

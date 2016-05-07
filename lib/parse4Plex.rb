@@ -1,4 +1,4 @@
-require_relative 'parse4Plex/plex_parser'
+require_relative 'parse4plex/plex_parser'
 
 module Parse4Plex
 

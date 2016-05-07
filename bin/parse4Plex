@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 
-require '../lib/parse4Plex'
+require '../lib/parse4plex'
 
 path = ARGV[0]
 args = ARGV[1]
 
 performParse = false
-puts args
+
 if args == '--parse'
   performParse = true
 end

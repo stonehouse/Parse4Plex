@@ -13,7 +13,9 @@ module Parse4Plex
 
     def parse()
       unless @path.nil?
-
+        if @path[-1] != "/"
+          @path = @path + "/"
+        end
         globQuery = "#{@path}*.{#{@supportedExtensions}}"
 
         unless @performParse

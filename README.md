@@ -3,7 +3,7 @@ This is very very early, but the general idea is to have a command-line tool to 
 
 ### How to... ###
 ```bash
-parse4plex ~/Movies --parse
+parse4plex --parse ~/Movies
 ```
 NOTE: Calling without parse will show all changes without actually executing them
 

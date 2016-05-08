@@ -53,7 +53,11 @@ module Parse4Plex
         end
 
         if queue.empty?
-          puts "No files queued, all done here.".green
+          if @performParse
+            puts "No files queued, all done here.".green
+          else
+            puts "#{'No files queued'.green} #{'(not that we were going to touch anything anyway)'.red}"
+          end
         else
           if @performParse
             puts "Performing the following changes...".green

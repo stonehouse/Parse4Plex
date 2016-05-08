@@ -3,13 +3,18 @@
 require "bundler/setup"
 require "parse4plex"
 
-path = ARGV[0]
-args = ARGV[1]
+args = ARGV
 
 performParse = false
 
-if args == '--parse'
+if args[0] == '--parse'
+  args.shift
   performParse = true
+end
+
+path = ''
+args.each do |arg|
+  path = arg
 end
 
 Parse4Plex.parse(path, performParse)

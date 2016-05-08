@@ -1,9 +1,21 @@
+require "parse4plex/base_name_parser"
+
 module Parse4Plex
 
   class SuperRugbyParser < BaseNameParser
 
+    def mime_type
+      '🏉 '
+    end
+
     def canParse()
-      if file.include? ".Super.Rugby."
+
+      if !file.include?(' ') &&
+          file.start_with?('RU') &&
+          file[20, 1] == 'R' &&
+          file.include?('Super.Rugby') &&
+          file.include?('.v.')
+
         return true
       end
 

@@ -1,4 +1,5 @@
 require "colorize"
+require "parse4plex/super_rugby_parser"
 
 module Parse4Plex
 
@@ -11,42 +12,82 @@ module Parse4Plex
       @performParse = performParse
     end
 
-    def parse()
+    def find_files(globQuery)
+      Dir.glob(globQuery)
+    end
+
+    def parse
+      filesParsed = []
+
       unless @path.nil?
         if @path[-1] != "/"
           @path = @path + "/"
         end
         globQuery = "#{@path}*.{#{@supportedExtensions}}"
 
-        unless @performParse
-          print "(TRIAL RUN)".red
-        end
-        puts "Renaming the following files...".green
-        Dir.glob(globQuery) do |fullFilePath|
-          dir = File.dirname fullFilePath
-          file = File.basename fullFilePath
+        puts "Checking files...".green
 
-          parsed = false
+        queue = []
+
+        find_files(globQuery).each do |fullFilePath|
+          parsers = []
+
+          puts "Findings parser for file '#{fullFilePath.blue}'"
           @nameParsers.each do |parserClass|
-            parser = parserClass.new(file)
+            parser = parserClass.new(fullFilePath)
 
             if parser.canParse
               parsedName = parser.parseName
-              if @performParse
-                File.rename(fullFilePath, "#{dir}/#{parsedName}")
-              end
-              puts "Parsed from '#{file}' to '#{parsedName.blue}'"
-              parsed = true
-              break
+
+              puts "#{parser.mime_type} - would parse from '#{parser.file}' to '#{parsedName.blue}'"
+              parsers << parser
             end
           end
 
-          unless parsed
-            puts "No parsers found".red + " for '#{file}'"
+          if parsers.empty?
+            puts "No parsers found".red + " for '#{fullFilePath}'"
+          else
+            queue << {:file => fullFilePath, :parsers => parsers}
           end
+
+        end
+
+        if queue.empty?
+          puts "No files queued, all done here.".green
+        else
+          if @performParse
+            puts "Performing the following changes...".green
+          else
+            puts "Here we would actually change the files if the #{'--parse'.blue} flag was used,".green
+            puts "instead we'll just print out what the changes would look like.".green
+          end
+          queue.each do |item|
+            fullFilePath = item[:fullFilePath]
+            if performParse fullFilePath, item[:parsers]
+              filesParsed << fullFilePath
+            end
+          end
+
+          puts "All done here.".green
         end
       else
         puts "Path must not be empty!"
+      end
+
+      filesParsed
+    end
+
+    def performParse(fullFilePath, parsers)
+      unless parsers.length == 1
+        puts "Multiple (#{parsers.length}) found for '#{fullFilePath.blue}'. Not quite sure what to do here..."
+      else
+        parser = parsers[0]
+        parsedName = parser.parseName
+        puts "#{parser.mime_type} - '#{parsedName.blue}'"
+        if @performParse
+          File.rename(fullFilePath, parser.dir + '/' + parsedName)
+        end
+        true
       end
     end
   end

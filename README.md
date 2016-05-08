@@ -1,4 +1,6 @@
 ## Plex Name Parser ##
+[![Build Status](https://travis-ci.org/egosapien/Parse4Plex.svg?branch=master)](https://travis-ci.org/egosapien/Parse4Plex)
+
 This is very very early, but the general idea is to have a command-line tool to quickly rename files with which Plex has trouble.
 
 ### How to... ###

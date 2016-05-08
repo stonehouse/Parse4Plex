@@ -66,9 +66,9 @@ module Parse4Plex
             puts "instead we'll just print out what the changes would look like.".green
           end
           queue.each do |item|
-            fullFilePath = item[:fullFilePath]
-            if performParse fullFilePath, item[:parsers]
-              filesParsed << fullFilePath
+            file = item[:file]
+            if performParse file, item[:parsers]
+              filesParsed << file
             end
           end
 

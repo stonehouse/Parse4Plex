@@ -33,7 +33,6 @@ describe Parse4Plex::PlexParser do
     files = ['~/Downloads/RU.2015.Super.Rugby.R18.Chiefs.v.Hurricanes.x264.mp4']
     mock = PlexParserMock.new(files)
     result = mock.parse
-    puts result
     expect(result.length).to eq(1)
   end
 

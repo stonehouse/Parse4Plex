@@ -14,8 +14,8 @@ module Parse4Plex
 
     def prompt(msg)
       if output
-        puts "#{msg}".blue
-        gets
+        print "#{msg}".blue.underline + ": "
+        STDIN.gets.chomp
       end
     end
 

@@ -11,7 +11,7 @@ module Parse4Plex
     def initialize(path, performParse=false)
       @ui = UI.new
       @path = path
-      @nameParsers = [SuperRugbyParser]
+      @nameParsers = [SuperRugbyParser, FilmParser]
       @supportedExtensions = 'mp4,avi'
       @performParse = performParse
     end

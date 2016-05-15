@@ -26,7 +26,6 @@ module Parse4Plex
       if body['Response'] == 'True'
         ui.debug "OMDB responded with success"
         if checkFilmWithUser body
-          ui.debug "TESTTT"
           @film = body
           return true
         end
@@ -38,7 +37,7 @@ module Parse4Plex
     end
 
     def checkFilmWithUser(film)
-      response = ui.prompt "Is this the film you're looking for? #{body[:Title]} (#{body[:Year]}) (y/n)"
+      response = ui.prompt "Is this the right film? '#{film['Title']} (#{film['Year']})' (y/n)"
       if response == 'y' || response == 'yes'
         true
       else

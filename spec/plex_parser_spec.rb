@@ -7,6 +7,7 @@ class PlexParserMock < Parse4Plex::PlexParser
   def initialize(files)
     @files = files
     super '~/Downloads', false
+    ui.output = false
   end
 
   def find_files(globQuery)

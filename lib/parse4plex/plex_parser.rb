@@ -1,11 +1,15 @@
-require "colorize"
-require "parse4plex/super_rugby_parser"
+require 'colorize'
+require 'parse4plex/super_rugby_parser'
+require 'parse4plex/film_parser'
+require 'parse4plex/ui'
 
 module Parse4Plex
 
   class PlexParser
+    attr_accessor :ui
 
     def initialize(path, performParse=false)
+      @ui = UI.new
       @path = path
       @nameParsers = [SuperRugbyParser]
       @supportedExtensions = 'mp4,avi'
@@ -20,32 +24,32 @@ module Parse4Plex
       filesParsed = []
 
       unless @path.nil?
-        if @path[-1] != "/"
-          @path = @path + "/"
+        if @path[-1] != '/'
+          @path = @path + '/'
         end
         globQuery = "#{@path}*.{#{@supportedExtensions}}"
 
-        puts "Checking files...".green
+        ui.info "Checking files..."
 
         queue = []
 
         find_files(globQuery).each do |fullFilePath|
           parsers = []
 
-          puts "Findings parser for file '#{fullFilePath.blue}'"
+          ui.log "Finding parser for file '#{fullFilePath.blue}'"
           @nameParsers.each do |parserClass|
-            parser = parserClass.new(fullFilePath)
+            parser = parserClass.new(fullFilePath, ui)
 
             if parser.canParse
               parsedName = parser.parseName
 
-              puts "#{parser.mime_type} - would parse from '#{parser.file}' to '#{parsedName.blue}'"
+              ui.log "#{parser.mime_type} - would parse from '#{parser.file}' to '#{parsedName.blue}'"
               parsers << parser
             end
           end
 
           if parsers.empty?
-            puts "No parsers found".red + " for '#{fullFilePath}'"
+            ui.warn "No parsers found for '#{fullFilePath}'"
           else
             queue << {:file => fullFilePath, :parsers => parsers}
           end
@@ -54,16 +58,16 @@ module Parse4Plex
 
         if queue.empty?
           if @performParse
-            puts "No files queued, all done here.".green
+            ui.info "No files queued, all done here."
           else
-            puts "#{'No files queued'.green} #{'(not that we were going to touch anything anyway)'.red}"
+            ui.info "#{'No files queued'.green} #{'(not that we were going to touch anything anyway)'.red}"
           end
         else
           if @performParse
-            puts "Performing the following changes...".green
+            ui.info "Performing the following changes..."
           else
-            puts "Here we would actually change the files if the #{'--parse'.blue} flag was used,".green
-            puts "instead we'll just print out what the changes would look like.".green
+            ui.info "Here we would actually change the files if the #{'--parse'.blue} flag was used,"
+            ui.info "instead we'll just print out what the changes would look like."
           end
           queue.each do |item|
             file = item[:file]
@@ -72,10 +76,10 @@ module Parse4Plex
             end
           end
 
-          puts "All done here.".green
+          ui.info "All done here."
         end
       else
-        puts "Path must not be empty!"
+        ui.err "Path must not be empty!"
       end
 
       filesParsed
@@ -83,11 +87,11 @@ module Parse4Plex
 
     def performParse(fullFilePath, parsers)
       unless parsers.length == 1
-        puts "Multiple (#{parsers.length}) found for '#{fullFilePath.blue}'. Not quite sure what to do here..."
+        ui.err "Multiple (#{parsers.length}) found for '#{fullFilePath.blue}'. Not quite sure what to do here..."
       else
         parser = parsers[0]
         parsedName = parser.parseName
-        puts "#{parser.mime_type} - '#{parsedName.blue}'"
+        ui.info "#{parser.mime_type} - '#{parsedName.blue}'"
         if @performParse
           File.rename(fullFilePath, parser.dir + '/' + parsedName)
         end

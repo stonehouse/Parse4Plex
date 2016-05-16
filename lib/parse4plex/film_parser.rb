@@ -18,7 +18,7 @@ module Parse4Plex
       end
 
       withoutExtension = file[0,file.length-4]
-      uri = URI('http://www.omdbapi.com')
+      uri = URI(api)
       params = { :t => withoutExtension }
       uri.query = URI.encode_www_form(params)
 
@@ -30,15 +30,30 @@ module Parse4Plex
 
       if body['Response'] == 'True'
         ui.debug "OMDB responded with success"
-        if checkFilmWithUser body
-          @film = body
-          return true
-        end
+        @film = body
+        return true
       else
         ui.debug "OMDB couldn't find a film matching the name '#{withoutExtension}'"
+        return search_for_match withoutExtension
       end
+    end
 
-      super
+    def search_for_match(filmTitle)
+      uri = URI(api)
+      params = { :s => filmTitle }
+      uri.query = URI.encode_www_form(params)
+      result = execute_query uri
+      if result['Response'] == 'True'
+        result['Search'].each do |searchRes|
+          if checkFilmWithUser searchRes
+            @film = body
+            return true
+          end
+        end
+      else
+        ui.debug "No matches found"
+        false
+      end
     end
 
     def execute_query(uri)
@@ -56,6 +71,10 @@ module Parse4Plex
 
     def parse_name()
       "#{@film['Title']} (#{@film['Year']}).#{file[-3, 3]}"
+    end
+
+    def api
+      'http://www.omdbapi.com'
     end
   end
 end

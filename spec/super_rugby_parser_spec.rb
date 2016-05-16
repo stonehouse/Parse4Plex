@@ -10,6 +10,10 @@ class SuperRugbyParserMock < Parse4Plex::SuperRugbyParser
     super fullFilePath, ui
   end
 
+  def assets_exist?
+    true
+  end
+
   def list_files(globQuery)
     @glob = globQuery
     @assets

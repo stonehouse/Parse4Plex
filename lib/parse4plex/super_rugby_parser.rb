@@ -49,7 +49,7 @@ module Parse4Plex
     end
 
     def check_artwork()
-      if Dir.exists?(@assetsPath)
+      if assets_exist?
         team1Assets = find_team_assets(@team1)
         team2Assets = find_team_assets(@team2)
 
@@ -71,6 +71,10 @@ module Parse4Plex
       else
         ui.debug "No plex assets found"
       end
+    end
+
+    def assets_exist?
+      Dir.exists?(@assetsPath)
     end
 
     def find_team_assets(team)

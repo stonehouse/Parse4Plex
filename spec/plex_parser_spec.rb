@@ -25,13 +25,13 @@ describe Parse4Plex::PlexParser do
   end
 
   it 'ignores non-video files' do
-    mock = PlexParserMock.new(['A file that is not a video file.txt'])
+    mock = PlexParserMock.new(['~/Documents/A file that is not a video file.txt'])
     mock.parse
     expect(mock.glob).to end_with '.{mp4,avi}'
   end
 
   it 'identifies super rugby parser' do
-    files = ['~/Downloads/RU.2015.Super.Rugby.R18.Chiefs.v.Hurricanes.x264.mp4']
+    files = ['~/Downloads/Rugby/RU.2015.Super.Rugby.R18.Chiefs.v.Hurricanes.x264.mp4']
     mock = PlexParserMock.new(files)
     result = mock.parse
     expect(result.length).to eq(1)

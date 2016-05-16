@@ -12,6 +12,11 @@ module Parse4Plex
     end
 
     def can_parse()
+      unless dir.include? 'Movies'
+        ui.debug "Skipping FilmParser because path does not include 'Movies'"
+        return false
+      end
+
       withoutExtension = file[0,file.length-4]
       uri = URI('http://www.omdbapi.com')
       params = { :t => withoutExtension }

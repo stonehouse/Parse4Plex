@@ -14,6 +14,10 @@ module Parse4Plex
     end
 
     def can_parse()
+      unless dir.include? 'Rugby'
+        ui.debug "Skipping SuperRugbyParser because path does not include 'Rugby'"
+        return false
+      end
 
       if !file.include?(' ') &&
           file.start_with?('RU') &&

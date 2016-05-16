@@ -22,7 +22,7 @@ module Parse4Plex
       ui.debug "API responded with '#{res}'"
 
       body = JSON.parse res
-      ui.debug body.class
+
       if body['Response'] == 'True'
         ui.debug "OMDB responded with success"
         if checkFilmWithUser body

@@ -40,8 +40,8 @@ module Parse4Plex
           @nameParsers.each do |parserClass|
             parser = parserClass.new(fullFilePath, ui)
 
-            if parser.canParse
-              parsedName = parser.parseName
+            if parser.can_parse
+              parsedName = parser.parse_name
 
               ui.log "#{parser.mime_type} - would parse from '#{parser.file}' to '#{parsedName.blue}'"
               parsers << parser
@@ -90,10 +90,10 @@ module Parse4Plex
         ui.err "Multiple (#{parsers.length}) found for '#{fullFilePath.blue}'. Not quite sure what to do here..."
       else
         parser = parsers[0]
-        parsedName = parser.parseName
+        parsedName = parser.parse_name
         ui.info "#{parser.mime_type} - '#{parsedName.blue}'"
         if @performParse
-          File.rename(fullFilePath, parser.dir + '/' + parsedName)
+          parser.do_parse
         end
         true
       end

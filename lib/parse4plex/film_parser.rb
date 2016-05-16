@@ -11,17 +11,17 @@ module Parse4Plex
       '📽 '
     end
 
-    def canParse()
+    def can_parse()
       withoutExtension = file[0,file.length-4]
       uri = URI('http://www.omdbapi.com')
       params = { :t => withoutExtension }
       uri.query = URI.encode_www_form(params)
 
       ui.debug "OMDB Query '#{uri.query}'"
-      res = Net::HTTP.get_response(uri)
-      ui.debug "API responded with '#{res.body}'"
+      res = execute_query(uri)
+      ui.debug "API responded with '#{res}'"
 
-      body = JSON.parse res.body
+      body = JSON.parse res
       ui.debug body.class
       if body['Response'] == 'True'
         ui.debug "OMDB responded with success"
@@ -36,6 +36,10 @@ module Parse4Plex
       super
     end
 
+    def execute_query(uri)
+      Net::HTTP.get_response(uri).body
+    end
+
     def checkFilmWithUser(film)
       response = ui.prompt "Is this the right film? '#{film['Title']} (#{film['Year']})' (y/n)"
       if response == 'y' || response == 'yes'
@@ -45,7 +49,7 @@ module Parse4Plex
       end
     end
 
-    def parseName()
+    def parse_name()
       "#{@film['Title']} (#{@film['Year']}).#{file[-3, 3]}"
     end
   end

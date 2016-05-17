@@ -1,38 +1,32 @@
 require 'spec_helper'
+include Parse4Plex
 
-class PlexParserMock < Parse4Plex::PlexParser
-
-  attr_reader :glob
-
-  def initialize(files)
-    @files = files
-    super '~/Downloads', false
-    ui.output = false
-  end
-
-  def find_files(globQuery)
-    @glob = globQuery
-    @files
-  end
-
-end
-
-describe Parse4Plex::PlexParser do
+describe PlexParser do
 
   it 'handles an empty path' do
-    mock = PlexParserMock.new([])
+    mock = PlexParser.new('~/Downloads', false)
+    allow(Dir).to receive(:glob) {[]}
+    mock.ui.output = false
     expect(mock.parse.length).to eq(0)
   end
 
   it 'ignores non-video files' do
-    mock = PlexParserMock.new(['~/Documents/A file that is not a video file.txt'])
+    path = '~/Documents'
+    mock = PlexParser.new(path, false)
+    mock.ui.output = false
+    allow(Dir).to receive(:glob).with("#{path}/*.{mp4,avi}") {
+      ['~/Documents/A file that is not a video file.txt']
+    }
     mock.parse
-    expect(mock.glob).to end_with '.{mp4,avi}'
   end
 
   it 'identifies super rugby parser' do
-    files = ['~/Downloads/Rugby/RU.2015.Super.Rugby.R18.Chiefs.v.Hurricanes.x264.mp4']
-    mock = PlexParserMock.new(files)
+    path = '~/Downloads/Rugby'
+    mock = PlexParser.new(path, false)
+    mock.ui.output = false
+    allow(Dir).to receive(:glob).with("#{path}/*.{mp4,avi}") {
+      ['~/Downloads/Rugby/RU.2015.Super.Rugby.R18.Chiefs.v.Hurricanes.x264.mp4']
+    }
     result = mock.parse
     expect(result.length).to eq(1)
   end

@@ -17,7 +17,7 @@ module Parse4Plex
     end
 
     def mime_type
-      '📺 '
+      '❓ '
     end
 
     def can_parse()

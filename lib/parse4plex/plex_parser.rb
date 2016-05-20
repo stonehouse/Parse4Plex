@@ -38,7 +38,7 @@ module Parse4Plex
 
           ui.log "Finding parser for file '#{fullFilePath.blue}'"
           @nameParsers.each do |parserClass|
-            parser = parserClass.new(fullFilePath, ui)
+            parser = parserClass.new(fullFilePath, ui, @performParse)
 
             if parser.can_parse
               parsedName = parser.parse_name

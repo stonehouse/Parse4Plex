@@ -79,6 +79,9 @@ module Parse4Plex
     def find_team_assets(team)
       assets = {}
       list_files(@assetsPath + "/super_rugby_*_#{team.downcase}.*").each do |asset|
+        unless ['.jpg', '.png', '.jpeg'].include? File.extname(asset)
+          ui.warn "This extension is unlikely to work '#{asset}'"
+        end
         if asset.include? 'poster'
           assets[:poster] = asset
         elsif asset.include? 'fanart'

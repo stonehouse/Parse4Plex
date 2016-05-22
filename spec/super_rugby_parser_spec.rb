@@ -45,4 +45,23 @@ describe Parse4Plex::SuperRugbyParser do
     parser = SuperRugbyParser.new(file, ui)
     parser.do_parse
   end
+
+  it 'finds artwork for team but artwork has weird extension i.e. gif' do
+    file = "~/Rugby/RU.2015.Super.Rugby.R18.Sunwolves.v.Jaguares.x264.mp4"
+    fileWithWeirdExtension = 'super_rugby_fanart_sunwolves.gif'
+    artwork = [fileWithWeirdExtension]
+    allow(Dir).to receive(:exists?) {true}
+    jaguaresAssetGlob = ".plex_assets/super_rugby_*_jaguares.*"
+    allow(Dir).to receive(:glob).with(end_with(jaguaresAssetGlob)) {artwork}
+    sunwolvesAssetGlob = ".plex_assets/super_rugby_*_sunwolves.*"
+    allow(Dir).to receive(:glob).with(end_with(sunwolvesAssetGlob)) {artwork}
+
+    allow(File).to receive(:rename).with('~/Rugby/RU.2015.Super.Rugby.R18.Sunwolves.v.Jaguares.x264.mp4', '~/Rugby/Sunwolves v Jaguares - Super Rugby 2015 Round 18.mp4')
+    allow(FileUtils).to receive(:cp).with(fileWithWeirdExtension, '~/Rugby')
+    allow(File).to receive(:rename).with('~/Rugby/super_rugby_fanart_sunwolves.gif', '~/Rugby/Sunwolves v Jaguares - Super Rugby 2015 Round 18-fanart.gif')
+    ui = UI.new
+    ui.output = false
+    parser = SuperRugbyParser.new(file, ui, true)
+    parser.do_parse
+  end
 end
